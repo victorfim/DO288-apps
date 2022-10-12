@@ -10,9 +10,11 @@ USER 0
 
 COPY . /tmp/todo-frontend
 
-RUN cd /tmp/todo-frontend
-RUN npm install
-RUN npm run build
+# CHANGE BEGINS
+RUN cd /tmp/todo-frontend && \
+	npm install && \
+	npm run build
+# CHANGE ENDS
 
 # https://github.com/sclorg/nginx-container
 FROM registry.access.redhat.com/ubi8/nginx-118
@@ -24,5 +26,10 @@ LABEL updatedDate="2021-05-19"
 
 COPY nginx.conf /etc/nginx/
 COPY --from=appbuild /tmp/todo-frontend/build /usr/share/nginx/html
+
+# EXPOSE PORT
+EXPOSE 8080
+
+USER nginx
 
 CMD nginx -g "daemon off;"
